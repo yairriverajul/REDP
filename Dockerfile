@@ -5,18 +5,34 @@ ENV DISPLAY=:1
 ENV USER=render
 ENV PASS=render123
 
-RUN apt-get update && apt-get install -y     xfce4 xfce4-goodies     xrdp dbus-x11 x11-xserver-utils xvfb     novnc websockify sudo supervisor     firefox-esr     net-tools curl wget     && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    xfce4 xfce4-goodies \
+    xrdp dbus-x11 x11-xserver-utils xvfb \
+    novnc websockify sudo supervisor \
+    net-tools curl wget \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -m -s /bin/bash ${USER} &&     echo "${USER}:${PASS}" | chpasswd &&     adduser ${USER} sudo
+# Crear usuario
+RUN useradd -m -s /bin/bash ${USER} && \
+    echo "${USER}:${PASS}" | chpasswd && \
+    adduser ${USER} sudo
 
+# Carpetas necesarias
 RUN mkdir -p /var/run/dbus /var/log/supervisor
 
-RUN sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini &&     echo "startxfce4" > /home/${USER}/.xsession &&     chown ${USER}:${USER} /home/${USER}/.xsession
+# Configurar XRDP + XFCE
+RUN sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini && \
+    echo "startxfce4" > /home/${USER}/.xsession && \
+    chown ${USER}:${USER} /home/${USER}/.xsession
 
+# Copiar configs
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start.sh /start.sh
+
 RUN chmod +x /start.sh
 
+# IMPORTANTE para Render
+ENV PORT=10000
 EXPOSE 10000
 
 CMD ["/start.sh"]
