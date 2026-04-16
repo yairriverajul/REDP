@@ -12,26 +12,21 @@ RUN apt-get update && apt-get install -y \
     net-tools curl wget \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Crear usuario
 RUN useradd -m -s /bin/bash ${USER} && \
     echo "${USER}:${PASS}" | chpasswd && \
     adduser ${USER} sudo
 
-# Carpetas necesarias
 RUN mkdir -p /var/run/dbus /var/log/supervisor
 
-# Configurar XRDP + XFCE
 RUN sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini && \
     echo "startxfce4" > /home/${USER}/.xsession && \
     chown ${USER}:${USER} /home/${USER}/.xsession
 
-# Copiar configs
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start.sh /start.sh
 
 RUN chmod +x /start.sh
 
-# IMPORTANTE para Render
 ENV PORT=10000
 EXPOSE 10000
 
