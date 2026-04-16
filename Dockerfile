@@ -4,6 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=:1
 ENV USER=appuser
 ENV PASS=render123
+ENV PORT=10000
 
 RUN apt-get update && apt-get install -y \
     xfce4 xfce4-goodies \
@@ -22,10 +23,10 @@ RUN mkdir -p /var/run/dbus /var/log/supervisor && \
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start.sh /start.sh
+COPY run-websockify.sh /run-websockify.sh
 
-RUN chmod +x /start.sh
+RUN chmod +x /start.sh /run-websockify.sh
 
-ENV PORT=10000
 EXPOSE 10000
 
 CMD ["/start.sh"]
