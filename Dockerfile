@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=:1
-ENV USER=render
+ENV USER=appuser
 ENV PASS=render123
 
 RUN apt-get update && apt-get install -y \
