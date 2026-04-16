@@ -10,4 +10,8 @@ if [ -f /usr/share/novnc/vnc.html ] && [ ! -f /usr/share/novnc/index.html ]; the
   ln -sf /usr/share/novnc/vnc.html /usr/share/novnc/index.html
 fi
 
+echo "DISPLAY=$DISPLAY"
+echo "PORT=$PORT"
+echo "Iniciando supervisord..."
+
 exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
